@@ -15,15 +15,19 @@ const firstName = "John";
 const lastName = "Doe";
 // const email = "qauser2010@mailinator.com";
 // const password = "P@ssword1";
-const url = "https://staging.lawvo.com/sign-up ";
+// const url = "https://staging.lawvo.com/sign-up ";
+const url = `${process.env.FRONT_URL}/sign-up`;
 
 async function fetchUserData(email) {
+  console.log("OMAD INJA");
   try {
-    const response = await axios.get("https://stagingapi.lawvo.com/users", {
+    // const response = await axios.get("https://stagingapi.lawvo.com/users", {
+    const response = await axios.get(`${process.env.BACK_URL}/users`, {
       params: {
         email: email,
       },
     });
+    console.log("reponse", response);
     console.log("response", response.data.data);
     const data = decodeData(response.data.data);
     console.log("new data", data);
@@ -35,7 +39,8 @@ async function fetchUserData(email) {
 
 async function signUpCustomer(email, password) {
   let driver;
-  const SUCCESSFULURL = `https://staging.lawvo.com/thank-you/${email}`;
+  // const SUCCESSFULURL = `https://staging.lawvo.com/thank-you/${email}`;
+  const SUCCESSFULURL = `${process.env.FRONT_URL}/thank-you/${email}`;
   //---------START create web driver--------------//
   driver = await new Builder()
     .forBrowser("chrome")
@@ -84,31 +89,36 @@ async function signUpCustomer(email, password) {
         15000
       );
       console.log("Form submission encountered an error.");
+      result = "FAILED";
     } catch {
+      result = "SUCCESSFUL";
       console.log("Form submitted successfully.");
     }
     //---------END--------------//
 
     //---------START check data entry--------------//
-    await driver
-      .wait(webdriver.until.urlIs(SUCCESSFULURL), 9000)
-      .then((isSuccess) => {
-        if (isSuccess) {
-          result = "SUCCESSFUL";
-        } else {
-          result = "FAILED";
-        }
-      })
-      .catch((error) => {
-        result = "FAILED " + "An error occurred:" + error;
-      });
-    const currentURL = await driver.getCurrentUrl();
-    currentURL == url ? (result = "FAILED") : (result = "SUCCESSFUL");
+    if (result == "SUCCESSFUL") {
+      await driver
+        .wait(webdriver.until.urlIs(SUCCESSFULURL), 9000)
+        .then((isSuccess) => {
+          if (isSuccess) {
+            result = "SUCCESSFUL";
+          } else {
+            result = "FAILED";
+          }
+        })
+        .catch((error) => {
+          result = "FAILED " + "An error occurred:" + error;
+        });
+      const currentURL = await driver.getCurrentUrl();
+      currentURL == url ? (result = "FAILED") : (result = "SUCCESSFUL");
+    }
     //---------END--------------//
 
     //---------START if submition was successful get verify token--------------//
     if (result == "SUCCESSFUL") {
       const user = await fetchUserData(email);
+      console.log("user", user);
       verifyToken = user.data[0].verifyToken;
     } else {
       result = "FAILED";
@@ -118,7 +128,8 @@ async function signUpCustomer(email, password) {
     //---------START if token exist verify user--------------//
     if (verifyToken) {
       await driver.get(
-        `https://staging.lawvo.com/verify-account/${verifyToken}`
+        // `https://staging.lawvo.com/verify-account/${verifyToken}`
+        `${process.env.FRONT_URL}/verify-account/${verifyToken}`
       );
     } else {
       result = "FAILED";
