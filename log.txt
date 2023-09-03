@@ -1,0 +1,36 @@
+[
+  {
+    "test": "buy a case (wills) as guest",
+    "result": "failed",
+    "date": "2023-09-03",
+    "time": "08:49:03"
+  },
+  {
+    "test": "buy a case (wills) as guest",
+    "result": "failed",
+    "date": "2023-09-03",
+    "time": "08:57:28"
+  },
+  {
+    "test": "buy a case (wills) as guest",
+    "result": "failed",
+    "date": "2023-09-03",
+    "time": "09:00:41"
+  },
+  {
+    "test": "buy a case (wills) as guest",
+    "result": "successful",
+    "date": "2023-09-03",
+    "time": "09:31:24"
+  },
+  {
+    "test": "sign up customer",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "qa-0c5996a0@mailinator.com",
+    "password": "P@ssword1",
+    "result": "FAILED",
+    "date": "2023-09-03",
+    "time": "10:06:11"
+  }
+]

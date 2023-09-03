@@ -1,3 +1,5 @@
+// import { Buffer } from "buffer";
+// import CryptoJS from "crypto-js";
 const { Buffer } = require("buffer");
 const CryptoJS = require("crypto-js");
 
@@ -20,7 +22,6 @@ const decodeData = (data, path) => {
     tmpData = CryptoJS.AES.decrypt(tmpData, HOOK_SECRET_KEY).toString(
       CryptoJS.enc.Utf8
     );
-    console.log("JSON.parse(tmpData)", JSON.parse(tmpData));
     return JSON.parse(tmpData);
   } catch (error) {
     console.error("decode data", path, error);
