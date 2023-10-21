@@ -1,14 +1,32 @@
 const signUp = require("./signUp");
-const logIn = require("./logIn");
+const logIn = require("../logIn");
 
 async function signUpLogin() {
+  let email;
+  let password;
+  let log;
   try {
-    const { email, password, log } = await signUp();
-    if (log.result == "SUCCESSFUL") {
-      await logIn(email, password);
-    }
+    const data = await signUp();
+    email = data.email;
+    password = data.password;
+    log = data.log;
   } catch (error) {
-    // console.log(error);
+    const log = {
+      TestTite: "firm sign up",
+      result: "FAILED",
+      error: "error",
+    };
+    writeObjectToCsv("log.csv", log);
+  }
+  try {
+    await logIn(email, password, "firm sign in");
+  } catch (error) {
+    const log = {
+      TestTite: "firm sign in",
+      result: "FAILED",
+      error: "error",
+    };
+    writeObjectToCsv("log.csv", log);
   }
 }
 

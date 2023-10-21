@@ -8,6 +8,9 @@ const { decodeData } = require("../../../utils/hashHelper");
 const {
   setupWebDriver,
   writeJsonObjectToFile,
+  writeObjectToCsv,
+  appendRow,
+  getElementById,
 } = require("../../../utils/utils");
 const chromeOptions = new chrome.Options();
 
@@ -57,9 +60,9 @@ async function signUpCustomer(email, password) {
     //---------END--------------//
     await driver.get(url);
     //---------START get elements--------------//
-    const radio = await driver.findElement(
-      By.xpath(`//input[@type='radio' and @value='${radioValue}']`)
-    );
+    // const radio = await driver.findElement(
+    //   By.xpath(`//input[@type='radio' and @value='${radioValue}']`)
+    // );
 
     const firstNameInput = await driver.findElement({
       id: "register_firstName",
@@ -73,13 +76,11 @@ async function signUpCustomer(email, password) {
     const confirmPasswordInput = await driver.findElement({
       id: "register_repeatPassword",
     });
-    const submitButton = await driver.findElement(
-      By.xpath("//button[@type='submit']")
-    );
+    const submitButton = await getElementById(driver, "signup-button");
     //---------END--------------//
 
     //---------START fill from--------------//
-    await radio.click();
+    // await radio.click();
     await firstNameInput.sendKeys(firstName);
     await lastNameInput.sendKeys(lastName);
     await emailInput.sendKeys(email);
@@ -138,20 +139,12 @@ async function signUpCustomer(email, password) {
     //---------START write to log file--------------//
     // log = `SIGN UP TEST\n role: ${radioValue} \n first name: ${firstName} \n last name: ${lastName} \n email : ${email} \n password: ${password} \n RESULT: ${result}\n------------------------ \n`;
     log = {
-      test: "sign up customer",
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
+      TestTite: "sign up customer",
       result: result,
+      error: null,
     };
-    writeJsonObjectToFile("log.txt", log);
-    // const jsonString = JSON.stringify(log) + "\n\n";
-    // try {
-    //   fs.appendFileSync("log.txt", jsonString);
-    // } catch (error) {
-    //   // console.error(err);
-    // }
+
+    writeObjectToCsv("log.csv", log);
     //---------END--------------//
   } finally {
     await driver.quit();

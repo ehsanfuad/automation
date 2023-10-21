@@ -5,6 +5,7 @@ const webdriver = require("selenium-webdriver");
 const {
   setupWebDriver,
   writeJsonObjectToFile,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 const chromeOptions = new chrome.Options();
 
@@ -66,14 +67,7 @@ async function logIn(email, password) {
       password: password,
       result: result,
     };
-    writeJsonObjectToFile("log.txt", log);
-    // const jsonString = JSON.stringify(log, null, 2) + "\n";
-    // try {
-    //   fs.appendFileSync("log.txt", jsonString);
-    //   console.log("File has been saved.");
-    // } catch (error) {
-    //   console.error(err);
-    // }
+    writeObjectToCsv("log.csv", log);
     //---------END--------------//
   } finally {
     await driver.quit();

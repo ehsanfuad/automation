@@ -1,25 +1,36 @@
 const signUp = require("./signUp");
-const logIn = require("./logIn");
-const uuid = require("uuid");
+const logIn = require("../logIn");
+const { writeObjectToCsv, makeEmail } = require("../../../utils/utils");
 
 async function signUpLogin() {
-  // const signUpEmail = "qauser2023@mailinator.com";
-  let id = uuid.v1();
-  id = id.substring(0, id.indexOf("-"));
-  const signUpEmail = `qa-${id}@mailinator.com`;
+  let email;
+  let password;
+  let log;
+  const signUpEmail = makeEmail();
   const signUpPassword = "P@ssword1";
   try {
-    const { email, password, result } = await signUp(
-      signUpEmail,
-      signUpPassword
-    );
-    if (result == "SUCCESSFUL") {
-      await logIn(email, password);
-    }
+    const data = await signUp(signUpEmail, signUpPassword);
+    email = data.email;
+    password = data.password;
+    log = data.log;
   } catch (error) {
-    // console.log(error);
+    const log = {
+      TestTite: "customer sign up",
+      result: "FAILED",
+      error: "error",
+    };
+    writeObjectToCsv("log.csv", log);
+  }
+  try {
+    await logIn(email, process.env.PASSWORD, "customer sign in");
+  } catch (error) {
+    const log = {
+      TestTite: "customer sign in",
+      result: "FAILED",
+      error: "error",
+    };
+    writeObjectToCsv("log.csv", log);
   }
 }
 
-// signUpLogin();
 module.exports = signUpLogin;

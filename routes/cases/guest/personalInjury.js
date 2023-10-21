@@ -11,6 +11,7 @@ const {
   getElementByContentAndType,
   writeJsonObjectToFile,
   getElementByName,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 
 async function personalInjury() {
@@ -33,7 +34,7 @@ async function personalInjury() {
     //get finish button if exist
     let isExist = await doesElementExist(
       driver,
-      "ant-btn ant-btn-primary sc-aXZVg cbyKUP"
+      "ant-btn ant-btn-primary sc-aXZVg bITZdF"
     );
     //click on questions until finish button appear
     while (!isExist) {
@@ -45,13 +46,13 @@ async function personalInjury() {
       //get finish button if exist
       isExist = await doesElementExist(
         driver,
-        "ant-btn ant-btn-primary sc-aXZVg cbyKUP"
+        "ant-btn ant-btn-primary sc-aXZVg bITZdF"
       );
     }
     //get finish button
     const finishButton = await getElementByClassName(
       driver,
-      "ant-btn ant-btn-primary sc-aXZVg cbyKUP"
+      "ant-btn ant-btn-primary sc-aXZVg bITZdF"
     );
     // click on finish buttom
     await finishButton.click();
@@ -63,7 +64,7 @@ async function personalInjury() {
       //get lawyer button
       const lawyerButton = await getElementByClassName(
         driver,
-        "ant-btn ant-btn-primary sc-aXZVg fNCWkA"
+        "ant-btn ant-btn-primary sc-aXZVg cgUiCy"
       );
       //click lawyer button
       await lawyerButton.click();
@@ -71,12 +72,57 @@ async function personalInjury() {
       // get result of that check
       const ok = await waitForUrlAndCheck(driver, checkoutUrl);
       if (ok) {
-        console.log("boro doroste");
+        const continiueButton = await getElementByClassName(
+          driver,
+          "ant-btn ant-btn-primary sc-aXZVg cJVKaW"
+        );
+        await continiueButton.click();
+        const loginPage = await waitForUrlAndCheck(
+          driver,
+          checkoutUrl + "/" + "log-in"
+        );
+        if (loginPage) {
+          const alreadyAccount = await getCheckboxByClassName(
+            driver,
+            "ant-checkbox-input"
+          );
+          await alreadyAccount.click();
+          const emailInput = await getElementById(driver, "login_email");
+          const passwordInput = await getElementById(driver, "login_password");
+          await emailInput.sendKeys("qa-8b48f990@mailinator.com");
+          await passwordInput.sendKeys("P@ssword1");
+          const nextButton = await getElementByClassName(
+            driver,
+            "ant-btn ant-btn-primary sc-aXZVg cbyKUP"
+          );
+          await nextButton.click();
+          const purchesPage = await waitForUrlAndCheck(
+            driver,
+            `${process.env.FRONT_URL}/relevant-lawyers/customize-package/purchase-package`
+          );
+          if (purchesPage) {
+            await driver.sleep(5000); // Wait for 5 seconds
+            const purchesButton = await getElementByClassName(
+              driver,
+              "ant-btn ant-btn-primary sc-aXZVg cUULpq"
+            );
+            await purchesButton.click();
+            const doneUrl = `${process.env.FRONT_URL}/purchase-success`;
+            const done = await waitForUrlAndCheck(driver, doneUrl);
+            if (done) {
+              log = {
+                test: "buy a case (personal injury) as guest",
+                result: "successful",
+              };
+            }
+          }
+        }
       }
     }
+    writeObjectToCsv("log.csv", log);
   } finally {
-    // await driver.quit();
+    await driver.quit();
   }
 }
-
-personalInjury();
+module.exports = personalInjury;
+// personalInjury();

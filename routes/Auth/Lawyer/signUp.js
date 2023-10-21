@@ -7,6 +7,7 @@ const { decodeData } = require("../../../utils/hashHelper");
 const {
   setupWebDriver,
   writeJsonObjectToFile,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 const chromeOptions = new chrome.Options();
 
@@ -142,13 +143,7 @@ async function signUpCustomer(email, password) {
       password: password,
       result: result,
     };
-    writeJsonObjectToFile("log.txt", log);
-    // const jsonString = JSON.stringify(log) + "\n\n";
-    // try {
-    //   fs.appendFileSync("log.txt", jsonString);
-    // } catch (error) {
-    //   // console.error(err);
-    // }
+    writeObjectToCsv("log.csv", log);
     //---------END--------------//
   } finally {
     await driver.quit();

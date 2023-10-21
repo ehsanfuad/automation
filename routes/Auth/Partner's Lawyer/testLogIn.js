@@ -1,10 +1,19 @@
-const logIn = require("./logIn");
+const logIn = require("../logIn");
 
 async function testLogIn() {
   try {
-    await logIn("lawyer2004@mailinator.com", process.env.PASSWORD);
+    await logIn(
+      "lawyer2004@mailinator.com",
+      process.env.PASSWORD,
+      "Sign in Partner's Lawyer"
+    );
   } catch (error) {
-    console.log(error);
+    const log = {
+      TestTitle: "signInPartnersLawyer",
+      result: "FAILED",
+      error: "error",
+    };
+    writeObjectToCsv("log.csv", log);
   }
 }
 

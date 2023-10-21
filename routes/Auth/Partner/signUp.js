@@ -6,6 +6,7 @@ const {
   fetchUserData,
   waitForUrlAndCheck,
   writeJsonObjectToFile,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 
 async function signUpPartner() {
@@ -14,13 +15,10 @@ async function signUpPartner() {
   const lastName = "Doe";
   let verifyToken;
   const email = makeEmail();
-  console.log("email:", email);
   let log = {
-    test: "sign up partner",
-    result: "failed",
-    firstName,
-    lastName,
-    email,
+    TestTitle: "sign up partner",
+    result: "FAILED",
+    error: "error",
   };
   const password = process.env.PASSWORD;
   const driver = await setupWebDriver();
@@ -42,7 +40,7 @@ async function signUpPartner() {
     await confirmPassInput.sendKeys(password);
     const submitButton = await getElementByClassName(
       driver,
-      "ant-btn ant-btn-primary ant-btn-lg sc-aXZVg kkjWIo"
+      "ant-btn ant-btn-primary ant-btn-lg sc-aXZVg iKeoku"
     );
     await submitButton.click();
     const thankYouUrl = `${process.env.FRONT_URL}/thank-you/${email}`;
@@ -60,9 +58,10 @@ async function signUpPartner() {
         console.log("state", state);
         console.log("verifiedUser", verifiedUser);
         state ? (log.result = "SUCCESSFUL") : (log.result = "FAILED");
+        state ? (log.error = null) : (log.error = "error");
       }
     }
-    writeJsonObjectToFile("log.txt", log);
+    writeObjectToCsv("log.csv", log);
   } catch (error) {
   } finally {
     await driver.quit();

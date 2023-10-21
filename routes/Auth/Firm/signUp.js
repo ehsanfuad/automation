@@ -6,6 +6,7 @@ const {
   fetchUserData,
   waitForUrlAndCheck,
   writeJsonObjectToFile,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 
 async function signUpFrim() {
@@ -16,11 +17,9 @@ async function signUpFrim() {
   const email = makeEmail();
   console.log("email:", email);
   let log = {
-    test: "sign up firm",
-    result: "failed",
-    firstName,
-    lastName,
-    email,
+    TestTitle: "sign up firm",
+    result: "FAILED",
+    error: "error",
   };
   const password = process.env.PASSWORD;
   const driver = await setupWebDriver();
@@ -40,10 +39,7 @@ async function signUpFrim() {
     await emailInput.sendKeys(email);
     await passwordInput.sendKeys(password);
     await confirmPassInput.sendKeys(password);
-    const submitButton = await getElementByClassName(
-      driver,
-      "ant-btn ant-btn-primary ant-btn-lg sc-aXZVg kkjWIo"
-    );
+    const submitButton = await getElementById(driver, "signup-button");
     await submitButton.click();
     const thankYouUrl = `${process.env.FRONT_URL}/thank-you/${email}`;
     const step1Done = await waitForUrlAndCheck(driver, thankYouUrl);
@@ -62,7 +58,7 @@ async function signUpFrim() {
         state ? (log.result = "SUCCESSFUL") : (log.result = "FAILED");
       }
     }
-    writeJsonObjectToFile("log.txt", log);
+    writeObjectToCsv("log.csv", log);
   } catch (error) {
   } finally {
     await driver.quit();

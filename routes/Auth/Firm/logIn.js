@@ -4,6 +4,7 @@ const {
   getElementByClassName,
   waitForUrlAndCheck,
   writeJsonObjectToFile,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 
 async function logIn(email, password) {
@@ -20,7 +21,7 @@ async function logIn(email, password) {
     const passwordInput = await getElementById(driver, "login_password");
     const logInButton = await getElementByClassName(
       driver,
-      "ant-btn ant-btn-primary ant-btn-lg sc-aXZVg kkjWIo"
+      "ant-btn ant-btn-primary ant-btn-lg sc-aXZVg iKeoku"
     );
     await emailInput.sendKeys(email);
     await passwordInput.sendKeys(password);
@@ -28,7 +29,7 @@ async function logIn(email, password) {
     const dashboardUrl = `${process.env.FRONT_URL}/dashboard`;
     const step1Done = await waitForUrlAndCheck(driver, dashboardUrl);
     step1Done ? (log.result = "SUCCESSFUL") : (log.result = "FAILED");
-    writeJsonObjectToFile("log.txt", log);
+    writeObjectToCsv("log.csv", log);
   } catch (error) {
   } finally {
     await driver.quit();
