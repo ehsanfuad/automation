@@ -43,6 +43,8 @@ const getQoute = require("./routes/qoute/getQoute");
 //customer case preview
 const customerCasePreview = require("./routes/cases/customer/casePreview");
 
+//lawyer case preview
+const lawyerCasePreview = require("./routes/cases/lawyer/casePreview");
 // mailer
 const sendEmail = require("./utils/mailer");
 const { writeObjectToCsv } = require("./utils/utils");
@@ -52,10 +54,16 @@ async function runAutomation() {
   // } catch (error) {
   //   console.log("get a qoute", error);
   // }
+  // try {
+  //   await customerCasePreview();
+  // } catch (error) {
+  //   console.log("customerCasePreview", error);
+  // }
+
   try {
-    await customerCasePreview();
+    await lawyerCasePreview();
   } catch (error) {
-    console.log("customerCasePreview", error);
+    console.log("lawyer case preview", error);
   }
   // try {
   //   await customerFullAuth();

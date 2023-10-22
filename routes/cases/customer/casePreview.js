@@ -2,9 +2,16 @@ const {
   setupWebDriver,
   getElementById,
   waitForUrlAndCheck,
+  getElementByClassName,
+  getDivByClassNameAndContent,
+  writeObjectToCsv,
 } = require("../../../utils/utils");
 const willsAsCustomer = require("./wills");
 async function casePreview() {
+  let log = {
+    test: "customer case preview",
+    result: "failed",
+  };
   let code = 0;
   try {
     code = await willsAsCustomer();
@@ -38,11 +45,43 @@ async function casePreview() {
         );
         if (dashboard) {
           await driver.get(`${process.env.FRONT_URL}/cases-preview/${code}`);
+          const casePreviewPage = waitForUrlAndCheck(
+            driver,
+            `${process.env.FRONT_URL}/cases-preview/${code}`
+          );
+          if (casePreviewPage) {
+            await driver.sleep(5000);
+            const caseIdDiv = await getDivByClassNameAndContent(
+              driver,
+              "ant-typography sc-dAlyuH iDkslI",
+              "Case ID"
+            );
+            const lawyerDiv = await getDivByClassNameAndContent(
+              driver,
+              "ant-typography sc-dAlyuH iDkslI",
+              "Lawyer"
+            );
+            const casIdText = await caseIdDiv.getText();
+            const caseId = casIdText.split(":").pop();
+            const caseIdCount = caseId.length;
+
+            const lawyerText = await lawyerDiv.getText();
+            const lawyer = lawyerText.split(":").pop();
+            const lawyerCount = lawyer.length;
+
+            if (caseIdCount > 1 && lawyerCount > 1) {
+              log = {
+                test: "customer case preview",
+                result: "successful",
+              };
+            }
+          }
         }
       }
     }
+    writeObjectToCsv("log.csv", log);
   } finally {
-    // await driver.quit();
+    await driver.quit();
   }
 }
 module.exports = casePreview;

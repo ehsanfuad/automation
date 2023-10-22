@@ -10,7 +10,6 @@ require("dotenv").config();
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
 const chromePath = "E:/automation-master/chromedriver";
-
 async function setupWebDriver() {
   const isWindows = process.env.IS_WINDOWS;
   if (isWindows == "true") {
